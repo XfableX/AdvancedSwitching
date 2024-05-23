@@ -1,12 +1,3 @@
-!
-! Last configuration change at 01:16:49 UTC Mon Mar 1 1993
-!
-version 15.0
-no service pad
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-!
 hostname ALS2
 !
 boot-start-marker
@@ -14,12 +5,17 @@ boot-end-marker
 !
 !
 no aaa new-model
+clock timezone EAST 10 0
+clock summer-time EADT recurring
 system mtu routing 1500
-vtp version 3
 vtp domain CISCO
-vtp mode server 
+vtp mode transparent
+udld aggressive
+
 !
 !
+ip dhcp snooping vlan 10,20
+ip dhcp snooping
 no ip domain-lookup
 ip domain-name CCNP.NET
 !
@@ -30,8 +26,17 @@ ip domain-name CCNP.NET
 !
 !
 !
-spanning-tree mode pvst
+!
+spanning-tree mode mst
+spanning-tree portfast bpduguard default
 spanning-tree extend system-id
+!
+spanning-tree mst configuration
+ name casestudy
+ revision 1
+ instance 1 vlan 10, 20
+ instance 2 vlan 100, 110, 150
+!
 !
 vlan internal allocation policy ascending
 !
@@ -47,6 +52,9 @@ vlan 100
 vlan 110
  name Voice
 !
+vlan 150
+ name Server_Farm
+!
 vlan 800
  name Native
 !
@@ -58,109 +66,228 @@ vlan 999
 !
 !
 !
-interface Port-channel2
- switchport mode trunk
-!
 interface Port-channel3
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
+ ip dhcp snooping trust
 !
 interface Port-channel4
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
+ ip dhcp snooping trust
 !
 interface FastEthernet0/1
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 4 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/2
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 4 mode desirable
+ ip dhcp snooping trust
 !
 interface FastEthernet0/3
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 3 mode on
+ ip dhcp snooping trust
 !
 interface FastEthernet0/4
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 3 mode on
+ ip dhcp snooping trust
 !
 interface FastEthernet0/5
+ switchport access vlan 999
+ switchport mode access
  shutdown
 !
 interface FastEthernet0/6
+ switchport access vlan 999
+ switchport mode access
  shutdown
 !
 interface FastEthernet0/7
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/8
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/9
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/10
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/11
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/12
- shutdown
+ switchport access vlan 20
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/13
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/14
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/15
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/16
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/17
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/18
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security violation protect
+ switchport port-security mac-address 1234.1234.1234
+ switchport port-security
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/19
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/20
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/21
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/22
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/23
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface FastEthernet0/24
- shutdown
+ switchport access vlan 10
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface GigabitEthernet0/1
- shutdown
+ switchport access vlan 999
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface GigabitEthernet0/2
- shutdown
+ switchport access vlan 999
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ ip dhcp snooping limit rate 15
 !
 interface Vlan1
  no ip address
- shutdown
+!
+interface Vlan100
+ ip address 172.16.100.102 255.255.255.0
 !
 ip http server
 ip http secure-server
+!
 !
 !
 line con 0
@@ -171,4 +298,5 @@ line vty 0 4
 line vty 5 15
  login
 !
+ntp server 172.16.100.2
 end

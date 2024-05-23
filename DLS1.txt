@@ -1,12 +1,3 @@
-!
-! Last configuration change at 14:23:31 UTC Wed Aug 26 2020
-!
-version 16.6
-no service pad
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no platform punt-keepalive disable-kernel-core
-!
 hostname DLS1
 !
 !
@@ -20,6 +11,8 @@ vrf definition Mgmt-vrf
 !
 !
 no aaa new-model
+clock timezone EAST 10 0
+clock summer-time EADT recurring
 switch 1 provision ws-c3650-24ts
 !
 !
@@ -29,6 +22,7 @@ ip routing
 !
 no ip domain lookup
 ip domain name CCNP.NET
+ip dhcp relay information trust-all
 !
 !
 !
@@ -39,16 +33,29 @@ ip domain name CCNP.NET
 !
 !
 !
-vtp version 3
 vtp domain CISCO
 vtp mode transparent
+udld aggressive
+
 cpp system-default
 !
 !
 !
 diagnostic bootup level minimal
-spanning-tree mode rapid-pvst
+!
+spanning-tree mode mst
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
 spanning-tree extend system-id
+!
+spanning-tree mst configuration
+ name casestudy
+ revision 1
+ instance 1 vlan 10, 20
+ instance 2 vlan 100, 110, 150
+!
+spanning-tree mst 0-1 priority 24576
+spanning-tree mst 2 priority 28672
 !
 !
 redundancy
@@ -67,11 +74,24 @@ vlan 100
 vlan 110
  name Voice
 !
+vlan 150
+ name Server_Farm
+!
 vlan 800
  name Native
 !
 vlan 999
  name Parking
+!
+track 10 interface GigabitEthernet1/0/11 line-protocol
+!
+track 20 interface GigabitEthernet1/0/11 line-protocol
+!
+track 100 interface GigabitEthernet1/0/11 line-protocol
+!
+track 110 interface GigabitEthernet1/0/11 line-protocol
+!
+track 150 interface GigabitEthernet1/0/11 line-protocol
 !
 !
 class-map match-any system-cpp-police-topology-control
@@ -158,126 +178,281 @@ policy-map system-cpp-policy
 interface Port-channel1
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
 !
 interface Port-channel3
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
 !
 interface Port-channel10
  no switchport
+ ip address 172.16.200.1 255.255.255.252
 !
 interface GigabitEthernet0/0
  vrf forwarding Mgmt-vrf
  no ip address
- shutdown
  speed 1000
  negotiation auto
 !
 interface GigabitEthernet1/0/1
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 1 mode desirable
 !
 interface GigabitEthernet1/0/2
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 1 mode desirable
 !
 interface GigabitEthernet1/0/3
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 3 mode on
 !
 interface GigabitEthernet1/0/4
  switchport trunk native vlan 800
  switchport mode trunk
+ switchport nonegotiate
  channel-group 3 mode on
 !
 interface GigabitEthernet1/0/5
  no switchport
+ no ip address
  channel-group 10 mode active
 !
 interface GigabitEthernet1/0/6
  no switchport
+ no ip address
  channel-group 10 mode active
 !
 interface GigabitEthernet1/0/7
- shutdown
+ switchport access vlan 100
+ switchport mode access
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/8
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/9
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/10
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/11
- shutdown
+ no switchport
+ ip address 192.168.0.2 255.255.255.252
 !
 interface GigabitEthernet1/0/12
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/13
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/14
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/15
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/16
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/17
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/18
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/19
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/20
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/21
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/22
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/23
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/0/24
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/1/1
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/1/2
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/1/3
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface GigabitEthernet1/1/4
+ switchport access vlan 999
+ switchport mode access
  shutdown
+ udld port aggressive
+ spanning-tree portfast
+ spanning-tree bpduguard enable
 !
 interface Vlan1
  no ip address
- shutdown
+!
+interface Vlan10
+ ip address 172.16.10.2 255.255.255.0
+ ip access-group 100 in
+ ip access-group ACLVLAN10 out
+ standby version 2
+ standby 10 ip 172.16.10.1
+ standby 10 priority 110
+ standby 10 preempt
+ standby 10 track 10 decrement 20
+!
+interface Vlan20
+ ip address 172.16.20.2 255.255.255.0
+ standby version 2
+ standby 20 ip 172.16.20.1
+ standby 20 priority 110
+ standby 20 preempt
+ standby 20 track 20 decrement 20
+!
+interface Vlan100
+ ip address 172.16.100.2 255.255.255.0
+ standby version 2
+ standby 100 ip 172.16.100.1
+ standby 100 preempt
+ standby 100 track 100 decrement 20
+!
+interface Vlan110
+ ip address 172.16.110.2 255.255.255.0
+ standby version 2
+ standby 110 ip 172.16.110.1
+ standby 110 preempt
+ standby 110 track 110 decrement 20
+!
+interface Vlan150
+ ip address 172.16.150.2 255.255.255.0
+ standby version 2
+ standby 150 ip 172.16.150.1
+ standby 150 preempt
+ standby 150 track 150 decrement 20
 !
 ip forward-protocol nd
 ip http server
-ip http authentication local
 ip http secure-server
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1/0/11
 !
 !
 !
+access-list 100 permit tcp 172.16.20.0 0.0.0.255 172.16.10.0 0.0.0.255 established
+access-list 100 permit icmp 172.16.20.0 0.0.0.255 172.16.10.0 0.0.0.255 echo-reply
+access-list 100 deny   ip 172.16.20.0 0.0.0.255 172.16.10.0 0.0.0.255
+access-list 100 permit ip any any
 !
 !
 !
@@ -286,6 +461,7 @@ control-plane
 !
 !
 line con 0
+ exec-timeout 0 0
  logging synchronous
  stopbits 1
 line aux 0
@@ -295,6 +471,7 @@ line vty 0 4
 line vty 5 15
  login
 !
+ntp master 10
 !
 wsma agent exec
 !
@@ -306,3 +483,4 @@ wsma agent notify
 !
 !
 end
+
